@@ -15,7 +15,6 @@ __pycache__
 /config.json
 /log
 /webui.settings.bat
-/embeddings
 /styles.csv
 /params.txt
 /styles.csv.bak
@@ -28,6 +27,12 @@ notification.mp3
 /SwinIR
 /textual_inversion
 .vscode
+/.vs
+/virtualenv
+/ort_nightly_directml-1.13.0.dev20221013004-cp310-cp310-win_amd64.whl
+/env
+*.bad
+/embeddings/ayush-spider-spr.pt
 /extensions
 /test/stdout.txt
 /test/stderr.txt

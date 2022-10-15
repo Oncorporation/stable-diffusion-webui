@@ -13,6 +13,7 @@ dir_extensions = "extensions"
 python = sys.executable
 git = os.environ.get('GIT', "git")
 index_url = os.environ.get('INDEX_URL', "")
+amd = "onnxruntime"
 
 
 def extract_arg(args, name):
@@ -158,8 +159,9 @@ def run_extensions_installers(settings_file):
 
 
 def prepare_enviroment():
-    torch_command = os.environ.get('TORCH_COMMAND', "pip install torch==1.12.1+cu113 torchvision==0.13.1+cu113 --extra-index-url https://download.pytorch.org/whl/cu113")
-    amd_command = os.environ.get('AMD_COMMAND', "pip install ort_nightly_directml-1.13.0.dev20221013004-cp310-cp310-win_amd64.whl --force-reinstall")
+    #torch_command = os.environ.get('TORCH_COMMAND', "pip install torch==1.12.1+cu113 torchvision==0.13.1+cu113 --extra-index-url https://download.pytorch.org/whl/cu113")
+    torch_command = os.environ.get('TORCH_COMMAND', "pip install torch==1.12.1+cu113 torchvision==0.13.1+cu113 --extra-index-url https://download.pytorch.org/whl/rocm5.1.1")
+    amd_command = os.environ.get('AMD_COMMAND', "pip install " + amd + " --force-reinstall")
     requirements_file = os.environ.get('REQS_FILE', "requirements_versions.txt")
     commandline_args = os.environ.get('COMMANDLINE_ARGS', "")
 
@@ -192,6 +194,7 @@ def prepare_enviroment():
     sys.argv, update_check = extract_arg(sys.argv, '--update-check')
     sys.argv, run_tests, test_dir = extract_opt(sys.argv, '--tests')
     xformers = '--xformers' in sys.argv
+    deepdanbooru = '--deepdanbooru' in sys.argv
     ngrok = '--ngrok' in sys.argv
 
     try:
@@ -201,6 +204,7 @@ def prepare_enviroment():
 
     print(f"Python {sys.version}")
     print(f"Commit hash: {commit}")
+    print(f"Args: {' '.join(sys.argv[1:])}")
     
     if not is_installed("torch") or not is_installed("torchvision"):
         run(f'"{python}" -m {torch_command}', "Installing torch and torchvision", "Couldn't install torch")
@@ -208,8 +212,11 @@ def prepare_enviroment():
     if not skip_torch_cuda_test:
         run_python("import torch; assert torch.cuda.is_available(), 'Torch is not able to use GPU; add --skip-torch-cuda-test to COMMANDLINE_ARGS variable to disable this check'")
 
-    if not is_installed("amd"):
+    if not is_installed(amd):
         run(f'"{python}" -m {amd_command}', "Installing amd", "Couldn't install amd")
+
+    if is_installed(amd):
+        run(f'"{python}" -m {amd_command}', "Reinstalling amd", "Couldn't install amd")
 
     if not is_installed("gfpgan"):
         run_pip(f"install {gfpgan_package}", "gfpgan")
@@ -231,6 +238,9 @@ def prepare_enviroment():
                     exit(0)
         elif platform.system() == "Linux":
             run_pip("install xformers", "xformers")
+
+    if not is_installed("deepdanbooru") and deepdanbooru:
+        run_pip(f"install {deepdanbooru_package}#egg=deepdanbooru[tensorflow] tensorflow==2.10.0 tensorflow-io==0.27.0", "deepdanbooru")
 
     if not is_installed("pyngrok") and ngrok:
         run_pip("install pyngrok", "ngrok")
