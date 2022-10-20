@@ -14,7 +14,7 @@ python = sys.executable
 git = os.environ.get('GIT', "git")
 index_url = os.environ.get('INDEX_URL', "")
 amd = "onnxruntime"
-amd_src = "ort_nightly_directml-1.13.0.dev20221019004-cp310-cp310-win_amd64.whl"
+amd_src = "ort_nightly_directml-1.13.0.dev20221021004-cp310-cp310-win_amd64.whl"
 
 
 def extract_arg(args, name):
