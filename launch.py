@@ -14,6 +14,7 @@ python = sys.executable
 git = os.environ.get('GIT', "git")
 index_url = os.environ.get('INDEX_URL', "")
 amd = "onnxruntime"
+amd_src = "ort_nightly_directml-1.13.0.dev20221019004-cp310-cp310-win_amd64.whl"
 
 
 def extract_arg(args, name):
@@ -161,7 +162,7 @@ def run_extensions_installers(settings_file):
 def prepare_enviroment():
     #torch_command = os.environ.get('TORCH_COMMAND', "pip install torch==1.12.1+cu113 torchvision==0.13.1+cu113 --extra-index-url https://download.pytorch.org/whl/cu113")
     torch_command = os.environ.get('TORCH_COMMAND', "pip install torch==1.12.1+cu113 torchvision==0.13.1+cu113 --extra-index-url https://download.pytorch.org/whl/rocm5.1.1")
-    amd_command = os.environ.get('AMD_COMMAND', "pip install " + amd + " --force-reinstall")
+    amd_command = os.environ.get('AMD_COMMAND', "pip install " + amd_src + " --force-reinstall")
     requirements_file = os.environ.get('REQS_FILE', "requirements_versions.txt")
     commandline_args = os.environ.get('COMMANDLINE_ARGS', "")
 
