@@ -15,13 +15,11 @@ __pycache__
 /config.json
 /log
 /webui.settings.bat
-/styles.csv
 /params.txt
 /styles.csv.bak
 /webui-user.bat
 /webui-user.sh
 /interrogate
-/user.css
 /.idea
 notification.mp3
 /SwinIR
@@ -36,3 +34,5 @@ notification.mp3
 /extensions
 /test/stdout.txt
 /test/stderr.txt
+/diffusers
+/scripts/vid2vid.py_old
