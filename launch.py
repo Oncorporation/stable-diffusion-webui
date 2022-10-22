@@ -111,11 +111,14 @@ def version_check(commit):
         commits = requests.get('https://api.github.com/repos/AUTOMATIC1111/stable-diffusion-webui/branches/master').json()
         if commit != "<none>" and commits['commit']['sha'] != commit:
             print("--------------------------------------------------------")
-            print("| You are not up to date with the most recent release. |")
-            print("| Consider running `git pull` to update.               |")
+            if run(f"git branch --contains " + str(commit).strip() + "") != '':
+                print("| You are using newer code than the branch master      |")
+            else:
+                print("| You are not up to date with the most recent release. |")
+                print("| Consider running `git pull` to update.               |")
             print("--------------------------------------------------------")
         elif commits['commit']['sha'] == commit:
-            print("You are up to date with the most recent release.")
+            print("You are up to date with the most recent release.")	
         else:
             print("Not a git clone, can't perform version check.")
     except Exception as e:
