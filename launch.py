@@ -163,9 +163,10 @@ def run_extensions_installers(settings_file):
 
 
 def prepare_enviroment():
-    #torch_command = os.environ.get('TORCH_COMMAND', "pip install torch==1.12.1+cu113 torchvision==0.13.1+cu113 --extra-index-url https://download.pytorch.org/whl/cu113")
-    torch_command = os.environ.get('TORCH_COMMAND', "pip install torch==1.12.1+cu113 torchvision==0.13.1+cu113 --extra-index-url https://download.pytorch.org/whl/rocm5.1.1")
+    torch_command = os.environ.get('TORCH_COMMAND', "pip install torch==1.12.1++cu116 torchvision==0.13.1+cu116 --extra-index-url https://download.pytorch.org/whl/cu113")
+    #torch_command = os.environ.get('TORCH_COMMAND', "pip install --extra-index-url https://download.pytorch.org/whl/rocm5.1.1")
     amd_command = os.environ.get('AMD_COMMAND', "pip install " + amd_src + " --force-reinstall")
+    amd_transformer = os.environ.get('AMD_TRANSFORMER', "pip install transformers ftfy scipy")
     requirements_file = os.environ.get('REQS_FILE', "requirements_versions.txt")
     commandline_args = os.environ.get('COMMANDLINE_ARGS', "")
 
@@ -217,9 +218,11 @@ def prepare_enviroment():
         run_python("import torch; assert torch.cuda.is_available(), 'Torch is not able to use GPU; add --skip-torch-cuda-test to COMMANDLINE_ARGS variable to disable this check'")
 
     if not is_installed(amd):
+        run(f'"{python}" -m {amd_transformer}', "Installing amd transformer", "Couldn't install amd transformer")
         run(f'"{python}" -m {amd_command}', "Installing amd", "Couldn't install amd")
 
     if is_installed(amd):
+        run(f'"{python}" -m {amd_transformer}', "Installing amd transformer", "Couldn't install amd transformer")
         run(f'"{python}" -m {amd_command}', "Reinstalling amd", "Couldn't install amd")
 
     if not is_installed("gfpgan"):

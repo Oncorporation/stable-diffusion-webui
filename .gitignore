@@ -36,3 +36,4 @@ notification.mp3
 /test/stderr.txt
 /diffusers
 /scripts/vid2vid.py_old
+/venv-old

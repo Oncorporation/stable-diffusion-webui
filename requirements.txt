@@ -30,3 +30,4 @@ inflection
 GitPython
 torchsde
 safetensors
+pathlib
