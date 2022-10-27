@@ -15,7 +15,7 @@ git = os.environ.get('GIT', "git")
 index_url = os.environ.get('INDEX_URL', "")
 amd = "onnxruntime"
 amd_src = "ort_nightly_directml-1.13.0.dev20221021004-cp310-cp310-win_amd64.whl"
-
+amd_src = "onnxruntime-directml"
 
 def extract_arg(args, name):
     return [x for x in args if x != name], name in args
@@ -163,10 +163,11 @@ def run_extensions_installers(settings_file):
 
 
 def prepare_enviroment():
-    torch_command = os.environ.get('TORCH_COMMAND', "pip install torch==1.12.1++cu116 torchvision==0.13.1+cu116 --extra-index-url https://download.pytorch.org/whl/cu113")
-    #torch_command = os.environ.get('TORCH_COMMAND', "pip install --extra-index-url https://download.pytorch.org/whl/rocm5.1.1")
+    #torch_command = os.environ.get('TORCH_COMMAND_Nvidia', "pip install torch==1.12.1+cu113 torchvision==0.13.1+cu113 --extra-index-url https://download.pytorch.org/whl/cu113")
+    torch_command = os.environ.get('TORCH_COMMAND', "pip install torch==1.12.1 torchvision==0.13.1")
+    #torch_command = os.environ.get('TORCH_COMMAND_linux', "pip install torch torchvision --extra-index-url https://download.pytorch.org/whl/rocm5.1.1")
     amd_command = os.environ.get('AMD_COMMAND', "pip install " + amd_src + " --force-reinstall")
-    amd_transformer = os.environ.get('AMD_TRANSFORMER', "pip install transformers ftfy scipy")
+    amd_transformer = os.environ.get('AMD_TRANSFORMER', "pip install transformers ftfy scipy transformers[onnx] onnxruntime")
     requirements_file = os.environ.get('REQS_FILE', "requirements_versions.txt")
     commandline_args = os.environ.get('COMMANDLINE_ARGS', "")
 
@@ -217,13 +218,15 @@ def prepare_enviroment():
     if not skip_torch_cuda_test:
         run_python("import torch; assert torch.cuda.is_available(), 'Torch is not able to use GPU; add --skip-torch-cuda-test to COMMANDLINE_ARGS variable to disable this check'")
 
+    if is_installed(amd):
+        run(f'"{python}" -m {amd_transformer}', "Reinstalling amd transformer", "Couldn't install amd transformer")
+        run(f'"{python}" -m pip install --upgrade wheel', "upgrading wheel", "Couldn't upgrade wheel")
+        run(f'"{python}" -m {amd_command}', "Reinstalling amd", "Couldn't install amd")
+
     if not is_installed(amd):
         run(f'"{python}" -m {amd_transformer}', "Installing amd transformer", "Couldn't install amd transformer")
+        run(f'"{python}" -m pip install --upgrade wheel', "upgrading wheel", "Couldn't upgrade wheel")
         run(f'"{python}" -m {amd_command}', "Installing amd", "Couldn't install amd")
-
-    if is_installed(amd):
-        run(f'"{python}" -m {amd_transformer}', "Installing amd transformer", "Couldn't install amd transformer")
-        run(f'"{python}" -m {amd_command}', "Reinstalling amd", "Couldn't install amd")
 
     if not is_installed("gfpgan"):
         run_pip(f"install {gfpgan_package}", "gfpgan")

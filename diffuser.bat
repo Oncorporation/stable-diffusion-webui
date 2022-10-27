@@ -1,11 +1,15 @@
-py -m venv g://projects//stable-diffusion-webui-amd//venv
-call  g://projects//stable-diffusion-webui-amd//venv/scripts/activate.bat
+#https://rentry.org/ayymd-stable-diffustion-v1_4-guide
+py -m venv g://projects//stable-diffusion-webui//venv
+call  g://projects//stable-diffusion-webui//venv/scripts/activate.bat
 py .\scripts\pip.exe install diffusers==0.6.0
 py .\scripts\pip.exe install transformers
 py .\scripts\pip.exe install transformers[onnx]
-py .\scripts\pip.exe install onnxruntime
+#py .\scripts\pip.exe install onnxruntime
+py .\scripts\pip.exe install onnxruntime-directml
 #py -m pip install optimum[onnxruntime]
 #py -m pip install --upgrade pip
+#py .\scripts\pip.exe install --upgrade pip wheel
+#python -m pip install --upgrade pip
 
 pip install g://projects//stable-diffusion-webui-amd//ort_nightly_directml-1.13.0.dev20221021004-cp310-cp310-win_amd64.whl --force-reinstall
 # py -m pip install protobuf
