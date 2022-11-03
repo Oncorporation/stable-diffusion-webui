@@ -247,6 +247,9 @@ def clear_loaded_vae():
 
 unspecified = object()
 
+def clear_loaded_vae():
+    global loaded_vae_file
+    loaded_vae_file = None
 
 def reload_vae_weights(sd_model=None, vae_file=unspecified):
     if not sd_model:
