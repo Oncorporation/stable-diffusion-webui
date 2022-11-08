@@ -1,3 +1,7 @@
+[name]
+masterpiece, best quality, [name]
+best quality, [name]
+masterpiece, [name]
 a photo of a [name]
 a rendering of a [name]
 a cropped photo of the [name]
