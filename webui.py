@@ -37,7 +37,7 @@ import modules.hypernetworks.hypernetwork
 if cmd_opts.server_name:
     server_name = cmd_opts.server_name
 else:
-    server_name = "0.0.0.0" if cmd_opts.listen else None
+    server_name = "192.168.1.47" if cmd_opts.listen else None
 
 
 def initialize():

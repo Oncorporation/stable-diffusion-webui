@@ -1,9 +1,10 @@
 blendmodes==2022
 transformers==4.19.2
+diffusers==0.7.2
 accelerate==0.12.0
 basicsr==1.4.2
 gfpgan==1.3.8
-gradio==3.15.0
+gradio==3.9
 numpy==1.23.3
 Pillow==9.2.0
 realesrgan==0.3.0
@@ -27,4 +28,5 @@ inflection==0.5.1
 GitPython==3.1.27
 torchsde==0.2.5
 safetensors==0.2.5
+facexlib==0.2.5
 httpcore<=0.15

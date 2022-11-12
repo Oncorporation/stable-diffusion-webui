@@ -109,11 +109,14 @@ def version_check(commit):
         commits = requests.get('https://api.github.com/repos/AUTOMATIC1111/stable-diffusion-webui/branches/master').json()
         if commit != "<none>" and commits['commit']['sha'] != commit:
             print("--------------------------------------------------------")
-            print("| You are not up to date with the most recent release. |")
-            print("| Consider running `git pull` to update.               |")
+            if run(f"git branch --contains " + str(commit).strip() + "") != '':
+                print("| You are using newer code than the branch master      |")
+            else:
+                print("| You are not up to date with the most recent release. |")
+                print("| Consider running `git pull` to update.               |")
             print("--------------------------------------------------------")
         elif commits['commit']['sha'] == commit:
-            print("You are up to date with the most recent release.")
+            print("You are up to date with the most recent release.")   
         else:
             print("Not a git clone, can't perform version check.")
     except Exception as e:
@@ -158,7 +161,8 @@ def run_extensions_installers(settings_file):
 
 
 def prepare_environment():
-    torch_command = os.environ.get('TORCH_COMMAND', "pip install torch==1.12.1+cu113 torchvision==0.13.1+cu113 --extra-index-url https://download.pytorch.org/whl/cu113")
+    torch_command = os.environ.get('TORCH_COMMAND', "pip install torch==1.12.1+cu116 torchvision==0.13.1+cu116 --extra-index-url https://download.pytorch.org/whl/cu116")
+    #torch_command = os.environ.get('TORCH_COMMAND', "pip install torch==1.12.1 torchvision==0.13.1")
     requirements_file = os.environ.get('REQS_FILE', "requirements_versions.txt")
     commandline_args = os.environ.get('COMMANDLINE_ARGS', "")
 
