@@ -31,6 +31,7 @@ scikit-image==0.21.0
 tensorboard==2.11.0
 timm==0.9.2
 tqdm==4.64.1
+tensorboard==2.11.0
 tomesd==0.1.2
 torchdiffeq==0.2.3
 torchsde==0.2.6
