@@ -15,7 +15,14 @@ styles_filename = cmd_opts.styles_file
 config_filename = cmd_opts.ui_settings_file
 hide_dirs = {"visible": not cmd_opts.hide_ui_dir_config}
 
-demo = None
+script_loading.preload_extensions(extensions_dir, parser)
+script_loading.preload_extensions(extensions_builtin_dir, parser)
+
+if os.environ.get('IGNORE_CMD_ARGS_ERRORS', None) is None:
+    cmd_opts = parser.parse_args()
+else:
+    cmd_opts, _ = parser.parse_known_args()
+
 
 device = None
 
