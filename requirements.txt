@@ -33,7 +33,7 @@ torchdiffeq
 torchsde
 transformers==4.30.2
 safetensors
-psutil
 rich
-tomesd
+psutil; sys_platform == 'darwin'
 tables
+tomesd
