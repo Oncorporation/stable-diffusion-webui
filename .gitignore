@@ -38,5 +38,9 @@ notification.mp3
 /package-lock.json
 /.coverage*
 /.vs
+/launchold.py
+/launchnew.py
+/launch1.py
+/venv1
 /diffusers
 /diffuser.bat
