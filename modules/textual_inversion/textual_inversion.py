@@ -554,6 +554,8 @@ def train_embedding(id_task, embedding_name, learn_rate, batch_size, gradient_st
 
                 scaler.step(optimizer)
                 scaler.update()
+                if embedding.step is None:
+                    embedding.step = 0
                 embedding.step += 1
                 pbar.update()
                 optimizer.zero_grad(set_to_none=True)
