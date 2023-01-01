@@ -421,6 +421,8 @@ def load_model_weights(model, checkpoint_info: CheckpointInfo, state_dict, timer
     if hasattr(model, 'logvar'):
         model.logvar = model.logvar.to(devices.device)  # fix for training
 
+    model.logvar = model.logvar.to(devices.device)  # fix for training
+
     sd_vae.delete_base_vae()
     sd_vae.clear_loaded_vae()
     vae_file, vae_source = sd_vae.resolve_vae(checkpoint_info.filename).tuple()
