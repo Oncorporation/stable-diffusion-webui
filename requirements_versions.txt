@@ -1,12 +1,12 @@
+transformers==4.25.1
 blendmodes==2022
-transformers==4.19.2
 diffusers==0.7.2
 accelerate==0.12.0
 basicsr==1.4.2
 gfpgan==1.3.7
 gradio==3.9
 numpy==1.23.3
-Pillow==9.2.0
+Pillow==9.3.0
 realesrgan==0.3.0
 torch
 omegaconf==2.2.3
@@ -29,4 +29,8 @@ GitPython==3.1.27
 torchsde==0.2.5
 safetensors==0.2.5
 facexlib==0.2.5
+modelcards==0.1.6
+tqdm==4.64.1
+tensorboard==2.11.0
+inflection==0.5.1
 httpcore<=0.15
