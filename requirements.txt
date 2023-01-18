@@ -8,7 +8,7 @@ clean-fid
 einops
 diffusers
 fastapi>=0.90.1
-fairscale==0.4.4
+fairscale==0.4.9
 fonts
 font-roboto
 gfpgan
