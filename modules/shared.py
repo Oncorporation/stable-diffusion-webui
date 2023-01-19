@@ -24,7 +24,18 @@ else:
     cmd_opts, _ = parser.parse_known_args()
 
 
-device = None
+restricted_opts = {
+    "samples_filename_pattern",
+    "directories_filename_pattern",
+    "outdir_samples",
+    "outdir_txt2img_samples",
+    "outdir_img2img_samples",
+    "outdir_extras_samples",
+    "outdir_grids",
+    "outdir_txt2img_grids",
+    "outdir_save",
+    "outdir_init_images"
+}
 
 weight_load_location = None
 
