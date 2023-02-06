@@ -168,7 +168,7 @@ def test_for_nans(x, where):
         message = "A tensor with all NaNs was produced."
 
     message += " Use --disable-nan-check commandline argument to disable this check."
-        raise NansException(message)
+    raise NansException(message)
 
 # MPS workaround for https://github.com/pytorch/pytorch/issues/79383
 orig_tensor_to = torch.Tensor.to
