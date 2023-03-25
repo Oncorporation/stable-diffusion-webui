@@ -288,8 +288,8 @@ def create_ui():
                     elif category == "dimensions":
                         with FormRow():
                             with gr.Column(elem_id="txt2img_column_size", scale=4):
-                                width = gr.Slider(minimum=64, maximum=2048, step=8, label="Width", value=512, elem_id="txt2img_width")
-                                height = gr.Slider(minimum=64, maximum=2048, step=8, label="Height", value=512, elem_id="txt2img_height")
+                                width = gr.Slider(minimum=64, maximum=3072, step=8, label="Width", value=512, elem_id="txt2img_width")
+                                height = gr.Slider(minimum=64, maximum=3072, step=8, label="Height", value=512, elem_id="txt2img_height")
 
                             with gr.Column(elem_id="txt2img_dimensions_row", scale=1, elem_classes="dimensions-tools"):
                                 res_switch_btn = ToolButton(value=switch_values_symbol, elem_id="txt2img_res_switch_btn", tooltip="Switch width/height")
@@ -912,6 +912,71 @@ def create_ui():
                         with gr.Column():
                             create_hypernetwork = gr.Button(value="Create hypernetwork", variant='primary', elem_id="train_create_hypernetwork")
 
+                with gr.Tab(label="Preprocess images", id="preprocess_images"):
+                    process_src = gr.Textbox(label='Source directory', elem_id="train_process_src")
+                    process_dst = gr.Textbox(label='Destination directory', elem_id="train_process_dst")
+                    process_width = gr.Slider(minimum=64, maximum=2048, step=8, label="Width", value=512, elem_id="train_process_width")
+                    process_height = gr.Slider(minimum=64, maximum=2048, step=8, label="Height", value=512, elem_id="train_process_height")
+                    preprocess_txt_action = gr.Dropdown(label='Existing Caption txt Action', value="ignore", choices=["ignore", "copy", "prepend", "append"], elem_id="train_preprocess_txt_action")
+
+                    with gr.Row():
+                        process_keep_original_size = gr.Checkbox(label='Keep original size', elem_id="train_process_keep_original_size")
+                        process_flip = gr.Checkbox(label='Create flipped copies', elem_id="train_process_flip")
+                        process_split = gr.Checkbox(label='Split oversized images', elem_id="train_process_split")
+                        process_focal_crop = gr.Checkbox(label='Auto focal point crop', elem_id="train_process_focal_crop")
+                        process_multicrop = gr.Checkbox(label='Auto-sized crop', elem_id="train_process_multicrop")
+                        process_caption = gr.Checkbox(label='Use BLIP for caption', elem_id="train_process_caption")
+                        process_caption_deepbooru = gr.Checkbox(label='Use deepbooru for caption', visible=True, elem_id="train_process_caption_deepbooru")
+
+                    with gr.Row(visible=False) as process_split_extra_row:
+                        process_split_threshold = gr.Slider(label='Split image threshold', value=0.5, minimum=0.0, maximum=1.0, step=0.05, elem_id="train_process_split_threshold")
+                        process_overlap_ratio = gr.Slider(label='Split image overlap ratio', value=0.2, minimum=0.0, maximum=0.9, step=0.05, elem_id="train_process_overlap_ratio")
+
+                    with gr.Row(visible=False) as process_focal_crop_row:
+                        process_focal_crop_face_weight = gr.Slider(label='Focal point face weight', value=0.9, minimum=0.0, maximum=1.0, step=0.05, elem_id="train_process_focal_crop_face_weight")
+                        process_focal_crop_entropy_weight = gr.Slider(label='Focal point entropy weight', value=0.15, minimum=0.0, maximum=1.0, step=0.05, elem_id="train_process_focal_crop_entropy_weight")
+                        process_focal_crop_edges_weight = gr.Slider(label='Focal point edges weight', value=0.5, minimum=0.0, maximum=1.0, step=0.05, elem_id="train_process_focal_crop_edges_weight")
+                        process_focal_crop_debug = gr.Checkbox(label='Create debug image', elem_id="train_process_focal_crop_debug")
+
+                    with gr.Column(visible=False) as process_multicrop_col:
+                        gr.Markdown('Each image is center-cropped with an automatically chosen width and height.')
+                        with gr.Row():
+                            process_multicrop_mindim = gr.Slider(minimum=64, maximum=2048, step=8, label="Dimension lower bound", value=384, elem_id="train_process_multicrop_mindim")
+                            process_multicrop_maxdim = gr.Slider(minimum=64, maximum=2048, step=8, label="Dimension upper bound", value=768, elem_id="train_process_multicrop_maxdim")
+                        with gr.Row():
+                            process_multicrop_minarea = gr.Slider(minimum=64*64, maximum=2048*2048, step=1, label="Area lower bound", value=64*64, elem_id="train_process_multicrop_minarea")
+                            process_multicrop_maxarea = gr.Slider(minimum=64*64, maximum=2048*2048, step=1, label="Area upper bound", value=640*640, elem_id="train_process_multicrop_maxarea")
+                        with gr.Row():
+                            process_multicrop_objective = gr.Radio(["Maximize area", "Minimize error"], value="Maximize area", label="Resizing objective", elem_id="train_process_multicrop_objective")
+                            process_multicrop_threshold = gr.Slider(minimum=0, maximum=1, step=0.01, label="Error threshold", value=0.1, elem_id="train_process_multicrop_threshold")
+
+                    with gr.Row():
+                        with gr.Column(scale=3):
+                            gr.HTML(value="")
+
+                        with gr.Column():
+                            with gr.Row():
+                                interrupt_preprocessing = gr.Button("Interrupt", elem_id="train_interrupt_preprocessing")
+                            run_preprocess = gr.Button(value="Preprocess", variant='primary', elem_id="train_run_preprocess")
+
+                    process_split.change(
+                        fn=lambda show: gr_show(show),
+                        inputs=[process_split],
+                        outputs=[process_split_extra_row],
+                    )
+
+                    process_focal_crop.change(
+                        fn=lambda show: gr_show(show),
+                        inputs=[process_focal_crop],
+                        outputs=[process_focal_crop_row],
+                    )
+
+                    process_multicrop.change(
+                        fn=lambda show: gr_show(show),
+                        inputs=[process_multicrop],
+                        outputs=[process_multicrop_col],
+                    )
+
                 def get_textual_inversion_template_names():
                     return sorted(textual_inversion.textual_inversion_templates)
 
@@ -943,8 +1008,8 @@ def create_ui():
                         template_file = gr.Dropdown(label='Prompt template', value="style_filewords.txt", elem_id="train_template_file", choices=get_textual_inversion_template_names())
                         create_refresh_button(template_file, textual_inversion.list_textual_inversion_templates, lambda: {"choices": get_textual_inversion_template_names()}, "refrsh_train_template_file")
 
-                    training_width = gr.Slider(minimum=64, maximum=2048, step=8, label="Width", value=512, elem_id="train_training_width")
-                    training_height = gr.Slider(minimum=64, maximum=2048, step=8, label="Height", value=512, elem_id="train_training_height")
+                    training_width = gr.Slider(minimum=64, maximum=3072, step=8, label="Width", value=512, elem_id="train_training_width")
+                    training_height = gr.Slider(minimum=64, maximum=3072, step=8, label="Height", value=512, elem_id="train_training_height")
                     varsize = gr.Checkbox(label="Do not resize images", value=False, elem_id="train_varsize")
                     steps = gr.Number(label='Max steps', value=100000, precision=0, elem_id="train_steps")
 
@@ -1010,6 +1075,42 @@ def create_ui():
                 ti_output,
                 ti_outcome,
             ]
+        )
+
+        run_preprocess.click(
+            fn=wrap_gradio_gpu_call(modules.textual_inversion.ui.preprocess, extra_outputs=[gr.update()]),
+            _js="start_training_textual_inversion",
+            inputs=[
+                dummy_component,
+                process_src,
+                process_dst,
+                process_width,
+                process_height,
+                preprocess_txt_action,
+                process_keep_original_size,
+                process_flip,
+                process_split,
+                process_caption,
+                process_caption_deepbooru,
+                process_split_threshold,
+                process_overlap_ratio,
+                process_focal_crop,
+                process_focal_crop_face_weight,
+                process_focal_crop_entropy_weight,
+                process_focal_crop_edges_weight,
+                process_focal_crop_debug,
+                process_multicrop,
+                process_multicrop_mindim,
+                process_multicrop_maxdim,
+                process_multicrop_minarea,
+                process_multicrop_maxarea,
+                process_multicrop_objective,
+                process_multicrop_threshold,
+            ],
+            outputs=[
+                ti_output,
+                ti_outcome,
+            ],
         )
 
         train_embedding.click(
@@ -1085,6 +1186,12 @@ def create_ui():
             outputs=[],
         )
 
+        interrupt_preprocessing.click(
+            fn=lambda: shared.state.interrupt(),
+            inputs=[],
+            outputs=[],
+        )
+
     loadsave = ui_loadsave.UiLoadsave(cmd_opts.ui_config_file)
 
     settings = ui_settings.UiSettings()
@@ -1124,6 +1231,7 @@ def create_ui():
                 with gr.TabItem(label, id=ifid, elem_id=f"tab_{ifid}"):
                     interface.render()
 
+            for interface, _label, ifid in interfaces:
                 if ifid not in ["extensions", "settings"]:
                     loadsave.add_block(interface, ifid)
 
@@ -1144,10 +1252,48 @@ def create_ui():
         settings.text_settings.change(fn=update_image_cfg_scale_visibility, inputs=[], outputs=[image_cfg_scale])
         demo.load(fn=update_image_cfg_scale_visibility, inputs=[], outputs=[image_cfg_scale])
 
-        modelmerger_ui.setup_ui(dummy_component=dummy_component, sd_model_checkpoint_component=settings.component_dict['sd_model_checkpoint'])
+        def modelmerger(*args):
+            try:
+                results = modules.extras.run_modelmerger(*args)
+            except Exception as e:
+                errors.report("Error loading/saving model file", exc_info=True)
+                modules.sd_models.list_models()  # to remove the potentially missing models from the list
+                return [*[gr.Dropdown.update(choices=modules.sd_models.checkpoint_tiles()) for _ in range(4)], f"Error merging checkpoints: {e}"]
+            return results
+
+        modelmerger_merge.click(fn=lambda: '', inputs=[], outputs=[modelmerger_result])
+        modelmerger_merge.click(
+            fn=wrap_gradio_gpu_call(modelmerger, extra_outputs=lambda: [gr.update() for _ in range(4)]),
+            _js='modelmerger',
+            inputs=[
+                dummy_component,
+                primary_model_name,
+                secondary_model_name,
+                tertiary_model_name,
+                interp_method,
+                interp_amount,
+                save_as_half,
+                custom_name,
+                checkpoint_format,
+                config_source,
+                bake_in_vae,
+                discard_weights,
+                save_metadata,
+            ],
+            outputs=[
+                primary_model_name,
+                secondary_model_name,
+                tertiary_model_name,
+                settings.component_dict['sd_model_checkpoint'],
+                modelmerger_result,
+            ]
+        )
 
     loadsave.dump_defaults()
     demo.ui_loadsave = loadsave
+
+    # Required as a workaround for change() event not triggering when loading values from ui-config.json
+    interp_description.value = update_interp_description(interp_method.value)
 
     return demo
 
@@ -1183,6 +1329,7 @@ checkpoint: <a id="sd_checkpoint_hash">N/A</a>
 
 def setup_ui_api(app):
     from pydantic import BaseModel, Field
+    from typing import List
 
     class QuicksettingsHint(BaseModel):
         name: str = Field(title="Name of the quicksettings field")
