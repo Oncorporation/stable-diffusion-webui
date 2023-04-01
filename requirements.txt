@@ -22,8 +22,7 @@ open-clip-torch
 opencv-contrib-python
 piexif
 Pillow
-psutil; sys_platform == 'darwin'
-pytorch_lightning==1.7.7
+pytorch_lightning==1.9.4
 realesrgan
 requests
 resize-right
@@ -32,7 +31,6 @@ safetensors
 scikit-image>=0.19
 tables
 timm==0.4.12
-tomesd
 torch
 torchdiffeq
 torchsde
