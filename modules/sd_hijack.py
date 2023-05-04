@@ -13,7 +13,7 @@ import ldm.modules.diffusionmodules.openaimodel
 import ldm.models.diffusion.ddpm
 import ldm.models.diffusion.ddim
 import ldm.models.diffusion.plms
-import ldm.modules.diffusionmodules.openaimodel
+import ldm.modules.encoders.modules
 
 import sgm.modules.attention
 import sgm.modules.diffusionmodules.model
@@ -24,6 +24,10 @@ attention_CrossAttention_forward = ldm.modules.attention.CrossAttention.forward
 diffusionmodules_model_nonlinearity = ldm.modules.diffusionmodules.model.nonlinearity
 diffusionmodules_model_AttnBlock_forward = ldm.modules.diffusionmodules.model.AttnBlock.forward
 
+# new memory efficient cross attention blocks do not support hypernets and we already
+# have memory efficient cross attention anyway, so this disables SD2.0's memory efficient cross attention
+ldm.modules.attention.MemoryEfficientCrossAttention = ldm.modules.attention.CrossAttention
+ldm.modules.attention.BasicTransformerBlock.ATTENTION_MODES["softmax-xformers"] = ldm.modules.attention.CrossAttention
 
 # silence new console spam from SD2
 ldm.modules.attention.print = shared.ldm_print
@@ -289,9 +293,12 @@ class StableDiffusionModelHijack:
         elif type(m.cond_stage_model) == sd_hijack_clip.FrozenCLIPEmbedderWithCustomWords:
             m.cond_stage_model = m.cond_stage_model.wrapped
 
-        model_embeddings = m.cond_stage_model.transformer.text_model.embeddings
-        if type(model_embeddings.token_embedding) == EmbeddingsWithFixes:
-            model_embeddings.token_embedding = model_embeddings.token_embedding.wrapped
+            model_embeddings = m.cond_stage_model.transformer.text_model.embeddings
+            if type(model_embeddings.token_embedding) == EmbeddingsWithFixes:
+                model_embeddings.token_embedding = model_embeddings.token_embedding.wrapped
+        elif type(m.cond_stage_model) == sd_hijack_open_clip.FrozenOpenCLIPEmbedderWithCustomWords:
+            m.cond_stage_model.wrapped.model.token_embedding = m.cond_stage_model.wrapped.model.token_embedding.wrapped
+            m.cond_stage_model = m.cond_stage_model.wrapped
 
         undo_optimizations()
         undo_weighted_forward(m)
@@ -374,12 +381,7 @@ def register_buffer(self, name, attr):
     """
 
     if type(attr) == torch.Tensor:
-        if attr.device != devices.device:
-
-            if devices.has_mps():
-                attr = attr.to(device="mps", dtype=torch.float32)
-            else:
-                attr = attr.to(devices.device)
+        attr = attr.to(device=devices.device, dtype=(torch.float32 if devices.device.type == 'mps' else None))
 
     setattr(self, name, attr)
 
