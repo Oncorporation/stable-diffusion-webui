@@ -2014,5 +2014,11 @@
     "train/Tabs@train_tabs/selected": null,
     "train/Keep original size/visible": true,
     "train/Keep original size/value": false,
-    "webui/Tabs@tabs/selected": null
+    "webui/Tabs@tabs/selected": null,
+    "txt2img/Control Mode/visible": true,
+    "txt2img/Control Mode/value": "Balanced",
+    "img2img/Control Mode/visible": true,
+    "img2img/Control Mode/value": "Balanced",
+    "customscript/gif2gif.py/img2img/Blend multiple outputs (batch, ControlNet maps)/visible": true,
+    "customscript/gif2gif.py/img2img/Blend multiple outputs (batch, ControlNet maps)/value": false
 }
