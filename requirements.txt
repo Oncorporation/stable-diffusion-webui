@@ -3,7 +3,7 @@ astunparse
 basicsr
 blendmodes
 clean-fid
-diffusers
+diffusers==0.18.2
 einops
 fairscale==0.4.9
 fastapi>=0.90.1
