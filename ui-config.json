@@ -8281,5 +8281,7 @@
     "xldemo_txt2img/Zip/visible": true,
     "xldemo_txt2img/Send to img2img/visible": true,
     "xldemo_txt2img/Send to inpaint/visible": true,
-    "xldemo_txt2img/Send to extras/visible": true
+    "xldemo_txt2img/Send to extras/visible": true,
+    "txt2img/\u2195\ufe0f/visible": true,
+    "img2img/\u2195\ufe0f/visible": true
 }

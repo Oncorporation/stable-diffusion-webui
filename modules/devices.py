@@ -224,6 +224,17 @@ if has_mps():
         orig_narrow = torch.narrow
         torch.narrow = lambda *args, **kwargs: ( orig_narrow(*args, **kwargs).clone() )
 
+@lru_cache
+def first_time_calculation():
+    """
+    just do any calculation with pytorch layers - the first time this is done it allocaltes about 700MB of memory and
+    spends about 2.7 seconds doing that, at least wih NVidia.
+    """
+
+    x = torch.zeros((1, 1)).to(device, dtype)
+    linear = torch.nn.Linear(1, 1).to(device, dtype)
+    linear(x)
+
     x = torch.zeros((1, 1, 3, 3)).to(device, dtype)
     conv2d = torch.nn.Conv2d(1, 1, (3, 3)).to(device, dtype)
     conv2d(x)
