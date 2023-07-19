@@ -8283,5 +8283,13 @@
     "xldemo_txt2img/Send to inpaint/visible": true,
     "xldemo_txt2img/Send to extras/visible": true,
     "txt2img/\u2195\ufe0f/visible": true,
-    "img2img/\u2195\ufe0f/visible": true
+    "img2img/\u2195\ufe0f/visible": true,
+    "xldemo_txt2img/Switch dims/visible": true,
+    "xldemo_txt2img/Batch count/visible": true,
+    "xldemo_txt2img/Batch count/value": 1,
+    "xldemo_txt2img/Batch count/minimum": 1,
+    "xldemo_txt2img/Batch count/maximum": 100,
+    "xldemo_txt2img/Batch count/step": 1,
+    "xldemo_txt2img/Random seed/visible": true,
+    "xldemo_txt2img/Reuse seed/visible": true
 }

@@ -15,27 +15,27 @@ styles_filename = cmd_opts.styles_file
 config_filename = cmd_opts.ui_settings_file
 hide_dirs = {"visible": not cmd_opts.hide_ui_dir_config}
 
-script_loading.preload_extensions(extensions_dir, parser)
-script_loading.preload_extensions(extensions_builtin_dir, parser)
+# script_loading.preload_extensions(extensions_dir, parser)
+# script_loading.preload_extensions(extensions_builtin_dir, parser)
 
-if os.environ.get('IGNORE_CMD_ARGS_ERRORS', None) is None:
-    cmd_opts = parser.parse_args()
-else:
-    cmd_opts, _ = parser.parse_known_args()
+# if os.environ.get('IGNORE_CMD_ARGS_ERRORS', None) is None:
+#     cmd_opts = parser.parse_args()
+# else:
+#     cmd_opts, _ = parser.parse_known_args()
 
 
-restricted_opts = {
-    "samples_filename_pattern",
-    "directories_filename_pattern",
-    "outdir_samples",
-    "outdir_txt2img_samples",
-    "outdir_img2img_samples",
-    "outdir_extras_samples",
-    "outdir_grids",
-    "outdir_txt2img_grids",
-    "outdir_save",
-    "outdir_init_images"
-}
+# restricted_opts = {
+#     "samples_filename_pattern",
+#     "directories_filename_pattern",
+#     "outdir_samples",
+#     "outdir_txt2img_samples",
+#     "outdir_img2img_samples",
+#     "outdir_extras_samples",
+#     "outdir_grids",
+#     "outdir_txt2img_grids",
+#     "outdir_save",
+#     "outdir_init_images"
+# }
 
 weight_load_location = None
 
