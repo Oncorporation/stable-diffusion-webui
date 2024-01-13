@@ -15,6 +15,9 @@ styles_filename = cmd_opts.styles_file
 config_filename = cmd_opts.ui_settings_file
 hide_dirs = {"visible": not cmd_opts.hide_ui_dir_config}
 
+demo = None
+
+device = None
 # script_loading.preload_extensions(extensions_dir, parser)
 # script_loading.preload_extensions(extensions_builtin_dir, parser)
 

@@ -13,6 +13,10 @@ def create_embedding(name, initialization_text, nvpt, overwrite_old):
 
     return gr.Dropdown.update(choices=sorted(sd_hijack.model_hijack.embedding_db.word_embeddings.keys())), f"Created: {filename}", ""
 
+def preprocess(*args):
+    modules.textual_inversion.preprocess.preprocess(*args)
+
+    return f"Preprocessing {'interrupted' if shared.state.interrupted else 'finished'}.", ""
 
 def train_embedding(*args):
 

@@ -1251,49 +1251,51 @@ def create_ui():
         update_image_cfg_scale_visibility = lambda: gr.update(visible=shared.sd_model and shared.sd_model.cond_stage_key == "edit")
         settings.text_settings.change(fn=update_image_cfg_scale_visibility, inputs=[], outputs=[image_cfg_scale])
         demo.load(fn=update_image_cfg_scale_visibility, inputs=[], outputs=[image_cfg_scale])
+        
+        modelmerger_ui.setup_ui(dummy_component=dummy_component, sd_model_checkpoint_component=settings.component_dict['sd_model_checkpoint'])
 
-        def modelmerger(*args):
-            try:
-                results = modules.extras.run_modelmerger(*args)
-            except Exception as e:
-                errors.report("Error loading/saving model file", exc_info=True)
-                modules.sd_models.list_models()  # to remove the potentially missing models from the list
-                return [*[gr.Dropdown.update(choices=modules.sd_models.checkpoint_tiles()) for _ in range(4)], f"Error merging checkpoints: {e}"]
-            return results
+        # def modelmerger(*args):
+        #     try:
+        #         results = modules.extras.run_modelmerger(*args)
+        #     except Exception as e:
+        #         errors.report("Error loading/saving model file", exc_info=True)
+        #         modules.sd_models.list_models()  # to remove the potentially missing models from the list
+        #         return [*[gr.Dropdown.update(choices=modules.sd_models.checkpoint_tiles()) for _ in range(4)], f"Error merging checkpoints: {e}"]
+        #     return results
 
-        modelmerger_merge.click(fn=lambda: '', inputs=[], outputs=[modelmerger_result])
-        modelmerger_merge.click(
-            fn=wrap_gradio_gpu_call(modelmerger, extra_outputs=lambda: [gr.update() for _ in range(4)]),
-            _js='modelmerger',
-            inputs=[
-                dummy_component,
-                primary_model_name,
-                secondary_model_name,
-                tertiary_model_name,
-                interp_method,
-                interp_amount,
-                save_as_half,
-                custom_name,
-                checkpoint_format,
-                config_source,
-                bake_in_vae,
-                discard_weights,
-                save_metadata,
-            ],
-            outputs=[
-                primary_model_name,
-                secondary_model_name,
-                tertiary_model_name,
-                settings.component_dict['sd_model_checkpoint'],
-                modelmerger_result,
-            ]
-        )
+        # modelmerger_merge.click(fn=lambda: '', inputs=[], outputs=[modelmerger_result])
+        # modelmerger_merge.click(
+        #     fn=wrap_gradio_gpu_call(modelmerger, extra_outputs=lambda: [gr.update() for _ in range(4)]),
+        #     _js='modelmerger',
+        #     inputs=[
+        #         dummy_component,
+        #         primary_model_name,
+        #         secondary_model_name,
+        #         tertiary_model_name,
+        #         interp_method,
+        #         interp_amount,
+        #         save_as_half,
+        #         custom_name,
+        #         checkpoint_format,
+        #         config_source,
+        #         bake_in_vae,
+        #         discard_weights,
+        #         save_metadata,
+        #     ],
+        #     outputs=[
+        #         primary_model_name,
+        #         secondary_model_name,
+        #         tertiary_model_name,
+        #         settings.component_dict['sd_model_checkpoint'],
+        #         modelmerger_result,
+        #     ]
+        # )
 
     loadsave.dump_defaults()
     demo.ui_loadsave = loadsave
 
     # Required as a workaround for change() event not triggering when loading values from ui-config.json
-    interp_description.value = update_interp_description(interp_method.value)
+    #interp_description.value = update_interp_description(interp_method.value)
 
     return demo
 
